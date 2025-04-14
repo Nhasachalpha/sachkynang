@@ -26,6 +26,9 @@
             --text-color: #2c3e50; /* Dark Blue/Gray */
             --light-bg: #f9f9f9;
         }
+        html {
+             scroll-behavior: smooth; /* Enable smooth scrolling */
+        }
         body {
             font-family: 'Montserrat', sans-serif;
             color: var(--text-color);
@@ -358,7 +361,7 @@
                     <div class="flex items-center">
                         <span class="mr-4 text-gray-700"><span class="line-through">179.000đ</span></span>
                         <span class="text-xl font-bold text-red-600 mr-6">149.000đ</span>
-                        <button class="btn-primary" onclick="scrollToOrderForm()">Mua Ngay</button>
+                        <button class="btn-primary" onclick="selectBookAndScroll('book1')">Mua Ngay</button>
                     </div>
                 </div>
             </div>
@@ -393,7 +396,7 @@
                     <div class="flex items-center">
                         <span class="mr-4 text-gray-700"><span class="line-through">179.000đ</span></span>
                         <span class="text-xl font-bold text-red-600 mr-6">149.000đ</span>
-                        <button class="btn-primary" onclick="scrollToOrderForm()">Mua Ngay</button>
+                         <button class="btn-primary" onclick="selectBookAndScroll('book2')">Mua Ngay</button>
                     </div>
                 </div>
             </div>
@@ -428,7 +431,7 @@
                     <div class="flex items-center">
                         <span class="mr-4 text-gray-700"><span class="line-through">179.000đ</span></span>
                         <span class="text-xl font-bold text-red-600 mr-6">149.000đ</span>
-                        <button class="btn-primary" onclick="scrollToOrderForm()">Mua Ngay</button>
+                         <button class="btn-primary" onclick="selectBookAndScroll('book3')">Mua Ngay</button>
                     </div>
                 </div>
             </div>
@@ -448,7 +451,7 @@
                     <p class="text-3xl font-bold text-yellow-200">Giá combo: 299.000đ</p>
                     <p class="text-lg mt-2">Tiết kiệm: 229.000đ (43%)</p>
                 </div>
-                <button class="btn-primary text-lg bg-white text-orange-500 hover:bg-gray-100" onclick="scrollToOrderForm()">
+                 <button class="btn-primary text-lg bg-white text-orange-500 hover:bg-gray-100" onclick="scrollToOrderForm()">
                     <i class="fas fa-shopping-cart mr-2"></i> Đặt Mua Combo Ngay
                 </button>
             </div>
@@ -675,7 +678,7 @@
             </div>
             <div>
                 <h3 class="text-xl font-bold mb-4">Liên Hệ</h3>
-                <p class="mb-2 text-gray-400"><i class="fas fa-phone mr-2 text-gray-500"></i> Hotline: <a href="tel:0972.048.409" class="hover:text-white">0923.456.789</a></p>
+                <p class="mb-2 text-gray-400"><i class="fas fa-phone mr-2 text-gray-500"></i> Hotline: <a href="tel:0977048409" class="hover:text-white">0972.048.409</a></p>
                 <p class="mb-2 text-gray-400"><i class="fas fa-envelope mr-2 text-gray-500"></i> Email: <a href="mailto:hotro@sachbanhang.vn" class="hover:text-white">hotro@sachbanhang.vn</a></p>
                 <p class="text-gray-400"><i class="fas fa-map-marker-alt mr-2 text-gray-500"></i> Địa chỉ: Căn LK3-22, ô đất TT6-3 Khu chức năng đô thị Tây Tựu, Phường Tây Tựu, quận Bắc Từ Liêm, HN</p>
             </div>
@@ -683,7 +686,7 @@
                 <h3 class="text-xl font-bold mb-4">Chính Sách</h3>
                 <ul class="space-y-2">
                     <li><a href="#" class="text-gray-400 hover:text-white transition duration-200">Chính sách đổi trả miễn phí 7 ngày</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition duration-200">Phương thức thanh toán</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition duration-200">Phương thức thanh toán khi nhận hàng</a></li>
                     <li><a href="#" class="text-gray-400 hover:text-white transition duration-200">Chính sách vận chuyển</a></li>
                     <li><a href="#" class="text-gray-400 hover:text-white transition duration-200">Chính sách bảo mật</a></li>
                 </ul>
@@ -711,6 +714,7 @@
         const notificationElement = document.getElementById('notification');
         const notificationAvatar = document.getElementById('notificationAvatar');
         const notificationText = document.getElementById('notificationText');
+        const orderFormSection = document.getElementById('orderForm'); // Get order form section
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', function() {
@@ -810,12 +814,39 @@
         }
 
         // --- Order Process Functions ---
+
+        /**
+         * Scrolls to the order form section smoothly.
+         * Also selects the combo radio button by default.
+         */
         function scrollToOrderForm() {
-            const orderFormSection = document.getElementById('orderForm');
+            // Select combo by default when scrolling generally
+            const comboRadio = document.getElementById('combo');
+            if (comboRadio) {
+                comboRadio.checked = true;
+            }
+
+            if (orderFormSection) {
+                // Use smooth scrolling if available, fallback to instant jump
+                orderFormSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        /**
+         * Selects a specific book radio button and then scrolls to the order form.
+         * @param {string} bookId The ID of the radio button to select (e.g., 'book1', 'book2').
+         */
+        function selectBookAndScroll(bookId) {
+            const bookRadio = document.getElementById(bookId);
+            if (bookRadio) {
+                bookRadio.checked = true; // Select the specific book
+            }
+            // Now scroll to the form
             if (orderFormSection) {
                 orderFormSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
+
 
         function reviewOrder() {
             // Validate form before showing modal
@@ -909,7 +940,7 @@
             // Show loading state on the button
             setConfirmButtonLoading();
 
-            // Get form data again (could potentially store from reviewOrder, but re-fetching is safer)
+            // Get form data again
             const name = buyForm.elements['name'].value.trim();
             const phone = buyForm.elements['phone'].value.trim();
             const specificAddress = buyForm.elements['specific_address'].value.trim();
@@ -923,20 +954,28 @@
             const fullAddress = `${specificAddress}, ${wardName}, ${districtName}, ${cityName}`;
 
             // Prepare data for SheetDB API
-            const today = new Date();
+            const now = new Date(); // Get current date and time
+
             // Format date as DD/MM/YYYY
-            const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-            const year = today.getFullYear();
-            const formattedDate = `${day}/${month}/${year}`;
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+            const year = now.getFullYear();
+
+            // Format time as HH:MM:SS
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            // Combine date and time
+            const formattedTimestamp = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`; // MODIFIED: Include time
 
             const orderData = {
-                date: formattedDate, // Ngày đặt
-                name: name,        // Họ tên
-                phone: phone,      // Số điện thoại
-                address: fullAddress,// Địa chỉ đầy đủ
-                don_hang: selectedProduct, // Sản phẩm đã chọn
-                Note: note || "Không có ghi chú" // Ghi chú (nếu có)
+                date: formattedTimestamp, // MODIFIED: Use the combined timestamp for the 'date' field
+                name: name,
+                phone: phone,
+                address: fullAddress,
+                don_hang: selectedProduct,
+                Note: note || "Không có ghi chú"
             };
 
             try {
@@ -945,8 +984,7 @@
                 // --- End Simulation ---
 
                 // Submit to SheetDB API
-                // Replace 'YOUR_SHEETDB_API_URL' with your actual SheetDB API endpoint
-                const sheetDbUrl = 'https://sheetdb.io/api/v1/fg5880qtxha50'; // Replace with your actual URL
+                const sheetDbUrl = 'https://sheetdb.io/api/v1/fg5880qtxha50'; // Replace with your actual URL if needed
                 await axios.post(sheetDbUrl, { data: orderData }); // SheetDB expects data wrapped in a 'data' object/array
 
                 // Success: Close order modal and show success modal
@@ -960,13 +998,7 @@
                 // Close the review modal on error
                 closeModal();
             } finally {
-                 // Always reset the button state, regardless of success or failure,
-                 // but only *after* the modal transitions are likely complete or irrelevant.
-                 // Since modals are hidden/shown, resetting here might not be visually necessary,
-                 // but it's good practice for robustness.
-                 // Resetting in closeModal() and closeSuccessModal() might be sufficient.
-                 // Let's keep the reset in closeModal() for manual closure/errors.
-                 // No explicit reset needed here on success as the modal disappears.
+                 // Reset button in closeModal, no need to reset here explicitly
             }
         }
 
