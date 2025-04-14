@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ Sách Kỹ Năng Bán Hàng Đỉnh Cao</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e74c3c; /* Red */
+            --secondary-color: #3498db; /* Blue */
+            --accent-color: #f39c12; /* Orange */
+            --success-color: #2ecc71; /* Green */
+            --text-color: #2c3e50; /* Dark Blue/Gray */
+            --light-bg: #f9f9f9;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-color);
+            background-color: #fff;
+            position: relative; /* Needed for fixed elements */
+        }
+        /* Custom gradient for the banner */
+        .banner-gradient {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b); /* Pink to Red gradient */
+        }
+        /* Book card hover effect */
+        .book-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        /* Price tag styling */
+        .price-tag {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 50%;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            transform: rotate(15deg); /* Slight rotation for effect */
+        }
+        /* Fixed order button styling and animation */
+        .order-btn-fixed {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+            }
+        }
+        /* Notification styling and animation */
+        .notification {
+            position: fixed;
+            bottom: 80px; /* Position above the fixed button */
+            right: 20px;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            z-index: 999;
+            max-width: 300px;
+            animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-out 4.5s forwards; /* Slide in, stay 4s, fade out */
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        /* Modal styling */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            z-index: 1001;
+            animation: fadeIn 0.3s; /* Fade in animation */
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto; /* Center vertically and horizontally */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            max-width: 600px; /* Limit width */
+            position: relative; /* Needed for absolute positioning of close button */
+            animation: slideDown 0.3s; /* Slide down animation */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        /* Button styling */
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none; /* Ensure no default border */
+            cursor: pointer; /* Indicate clickable */
+        }
+        .btn-primary:hover {
+            background-color: #c0392b; /* Darker red on hover */
+            transform: translateY(-2px);
+        }
+        .btn-primary:disabled { /* Style for disabled state */
+            background-color: #f8a59b; /* Lighter red */
+            cursor: not-allowed;
+            transform: none; /* No hover effect when disabled */
+        }
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-success:hover {
+            background-color: #27ae60; /* Darker green on hover */
+            transform: translateY(-2px);
+        }
+        .btn-success:disabled { /* Style for disabled state */
+            background-color: #7adf9f; /* Lighter green */
+            cursor: not-allowed;
+            transform: none;
+        }
+        /* Discount badge styling */
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        /* Rating stars styling */
+        .rating {
+            color: var(--accent-color);
+        }
+        /* Section title styling */
+        .section-title {
+            position: relative;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        /* Testimonial card styling */
+        .testimonial-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+        }
+        /* Feature icon styling */
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        /* Input focus styling */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        /* Active tab styling */
+        .tab-active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        /* Close button for modal */
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <button id="orderBtnFixed" class="order-btn-fixed btn-primary shadow-lg" onclick="scrollToOrderForm()">
+        <i class="fas fa-shopping-cart mr-2"></i> Đặt Hàng Ngay
+    </button>
+
+    <div id="notification" style="display: none;" class="notification">
+        <img id="notificationAvatar" class="w-10 h-10 rounded-full mr-3 object-cover" src="https://placehold.co/40x40/cccccc/ffffff?text=?" alt="Avatar" onerror="this.onerror=null; this.src='https://placehold.co/40x40/cccccc/ffffff?text=?';">
+        <div>
+            <p id="notificationText" class="text-sm"></p>
+            <p class="text-xs text-gray-500">vừa đặt hàng thành công</p>
+        </div>
+    </div>
+
+    <header class="banner-gradient text-white py-16 md:py-24 px-4">
+        <div class="container mx-auto text-center">
+            <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m442nm6bo1l3f3.webp"
+                 alt="Bộ Sách Bán Hàng"
+                 class="mx-auto mb-8 rounded-lg shadow-lg w-full max-w-md md:max-w-lg"
+                 onerror="this.onerror=null; this.src='https://placehold.co/600x400/ff4b2b/ffffff?text=Bộ+Sách';">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4">Bộ Sách Kỹ Năng Bán Hàng Đỉnh Cao</h1>
+            <p class="text-xl md:text-2xl mb-8">Khám phá bí quyết để trở thành bậc thầy bán hàng</p>
+            <div class="flex justify-center items-center mb-8">
+                <div class="px-4 py-2 bg-white text-red-600 rounded-lg font-bold text-lg md:text-xl shadow-md">
+                    <span class="line-through text-gray-500">528.000đ</span> Chỉ còn <span class="text-red-600">299.000đ</span>
+                </div>
+            </div>
+            <p class="text-white text-lg mb-6">Tiết kiệm đến <span class="font-bold text-yellow-300">43%</span> khi mua trọn bộ!</p>
+            <button class="btn-primary text-lg" onclick="scrollToOrderForm()">
+                <i class="fas fa-bolt mr-2"></i> Mua Ngay - Số Lượng Có Hạn
+            </button>
+        </div>
+    </header>
+
+    <section class="py-16 px-4 bg-gray-50">
+        <div class="container mx-auto text-center">
+            <h2 class="section-title text-3xl mb-12">Tại Sao Bạn Cần Bộ Sách Này?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md transition duration-300 hover:shadow-lg">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Hiểu Tâm Lý Khách Hàng</h3>
+                    <p class="text-gray-600">Khám phá những nguyên lý tâm lý học giúp bạn nắm bắt và tác động đến quá trình ra quyết định của khách hàng.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md transition duration-300 hover:shadow-lg">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Tăng Doanh Số Bán Hàng</h3>
+                    <p class="text-gray-600">Áp dụng các chiến lược và kỹ thuật đã được chứng minh giúp tăng tỷ lệ chuyển đổi và doanh số bán hàng.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md transition duration-300 hover:shadow-lg">
+                    <div class="feature-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Xử Lý Tình Huống Khó</h3>
+                    <p class="text-gray-600">Học cách chinh phục ngay cả những khách hàng khó tính nhất bằng 36 kế chiến lược hiệu quả.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-4">
+        <div class="container mx-auto">
+            <h2 class="section-title text-3xl text-center mb-12">Bộ Sách Gồm 3 Cuốn</h2>
+
+            <div class="flex flex-col md:flex-row items-center mb-16 book-card p-6 bg-white rounded-lg shadow-md relative overflow-hidden">
+                <div class="md:w-1/3 mb-6 md:mb-0 relative">
+                    <span class="discount-badge">-17%</span>
+                    <img src="https://product.hstatic.net/200000692705/product/thao_tung_tam_ly_khach_hang_bang_tam_ly_hoc_7fc014ee209d4b698318ad18ceb20b81.jpg"
+                         alt="Thao Túng Khách Hàng Bằng Tâm Lý Học"
+                         class="rounded-lg shadow-lg mx-auto w-64"
+                         onerror="this.onerror=null; this.src='https://placehold.co/256x384/cccccc/ffffff?text=Sách+1';">
+                    <div class="price-tag">
+                        149K
+                    </div>
+                </div>
+                <div class="md:w-2/3 md:pl-8">
+                    <h3 class="text-2xl font-bold mb-4">Thao Túng Khách Hàng Bằng Tâm Lý Học</h3>
+                    <div class="flex items-center mb-4">
+                        <div class="rating mr-2">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="text-gray-600">4.7/5 (126 đánh giá)</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">Cuốn sách giúp bạn hiểu sâu sắc về tâm lý khách hàng, phân tích các nguyên lý và hiệu ứng tâm lý có thể áp dụng để thuyết phục khách hàng một cách hiệu quả. Bạn sẽ học được:</p>
+                    <ul class="list-disc pl-5 mb-6 text-gray-700 space-y-1">
+                        <li>Nguyên lý "Thiếu hụt tạo ra nhu cầu" và cách áp dụng</li>
+                        <li>Hiệu ứng hào quang và cách xây dựng uy tín với khách hàng</li>
+                        <li>Nghệ thuật tạo "cảm giác khan hiếm" để thúc đẩy quyết định mua hàng</li>
+                        <li>Tâm lý học giá và cách định giá sản phẩm hấp dẫn</li>
+                        <li>Kỹ thuật neo tâm lý và gợi mở nhu cầu tiềm ẩn</li>
+                    </ul>
+                    <div class="flex items-center">
+                        <span class="mr-4 text-gray-700"><span class="line-through">179.000đ</span></span>
+                        <span class="text-xl font-bold text-red-600 mr-6">149.000đ</span>
+                        <button class="btn-primary" onclick="scrollToOrderForm()">Mua Ngay</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center mb-16 book-card p-6 bg-white rounded-lg shadow-md relative overflow-hidden">
+                <div class="md:w-1/3 mb-6 md:mb-0 relative">
+                    <span class="discount-badge">-17%</span>
+                    <img src="https://product.hstatic.net/200000060620/product/bia_20a87aee3196469088c60f27f76aba4a_master.jpg"
+                         alt="Để Trở Thành Người Bán Hàng Giỏi Nhất"
+                         class="rounded-lg shadow-lg mx-auto w-64"
+                         onerror="this.onerror=null; this.src='https://placehold.co/256x384/cccccc/ffffff?text=Sách+2';">
+                    <div class="price-tag">
+                        149K
+                    </div>
+                </div>
+                <div class="md:w-2/3 md:pl-8">
+                    <h3 class="text-2xl font-bold mb-4">Để Trở Thành Người Bán Hàng Giỏi Nhất</h3>
+                    <div class="flex items-center mb-4">
+                        <div class="rating mr-2">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <span class="text-gray-600">4.9/5 (158 đánh giá)</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">Cuốn sách này chia sẻ những bí quyết từ các chuyên gia bán hàng hàng đầu thế giới, giúp bạn nâng cao kỹ năng và đạt được thành công trong lĩnh vực bán hàng. Bạn sẽ được học:</p>
+                    <ul class="list-disc pl-5 mb-6 text-gray-700 space-y-1">
+                        <li>Cách xây dựng mối quan hệ bền vững với khách hàng</li>
+                        <li>Kỹ thuật đặt câu hỏi để tìm hiểu nhu cầu thực sự của khách hàng</li>
+                        <li>Phương pháp xử lý từ chối và vượt qua phản đối</li>
+                        <li>Nghệ thuật trình bày giải pháp thay vì chỉ bán sản phẩm</li>
+                        <li>Bí quyết giữ tinh thần tích cực và vượt qua thất bại</li>
+                    </ul>
+                    <div class="flex items-center">
+                        <span class="mr-4 text-gray-700"><span class="line-through">179.000đ</span></span>
+                        <span class="text-xl font-bold text-red-600 mr-6">149.000đ</span>
+                        <button class="btn-primary" onclick="scrollToOrderForm()">Mua Ngay</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center mb-16 book-card p-6 bg-white rounded-lg shadow-md relative overflow-hidden">
+                <div class="md:w-1/3 mb-6 md:mb-0 relative">
+                    <span class="discount-badge">-17%</span>
+                    <img src="https://bizbooks.vn/uploads/images/2023/thang-9/1-36-ke-chinh-phuc-khach-hang-mt.jpg"
+                         alt="36 kế Chinh Phục Khách Hàng Khó Tính"
+                         class="rounded-lg shadow-lg mx-auto w-64"
+                         onerror="this.onerror=null; this.src='https://placehold.co/256x384/cccccc/ffffff?text=Sách+3';">
+                    <div class="price-tag">
+                        149K
+                    </div>
+                </div>
+                <div class="md:w-2/3 md:pl-8">
+                    <h3 class="text-2xl font-bold mb-4">36 kế Chinh Phục Khách Hàng Khó Tính</h3>
+                    <div class="flex items-center mb-4">
+                        <div class="rating mr-2">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <span class="text-gray-600">4.8/5 (142 đánh giá)</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">Cuốn sách này cung cấp 36 chiến lược thực tế để chinh phục ngay cả những khách hàng khó tính nhất. Với phương pháp tiếp cận độc đáo, bạn sẽ biết cách:</p>
+                    <ul class="list-disc pl-5 mb-6 text-gray-700 space-y-1">
+                        <li>Xác định và phân loại các kiểu khách hàng khó tính</li>
+                        <li>Biến khách hàng phản đối thành cơ hội bán hàng</li>
+                        <li>Kỹ thuật đàm phán, thương lượng với khách hàng cứng đầu</li>
+                        <li>Tâm lý học ứng xử trong tình huống căng thẳng</li>
+                        <li>Chiến lược chăm sóc hậu mãi để biến khách hàng khó tính thành khách hàng trung thành</li>
+                    </ul>
+                    <div class="flex items-center">
+                        <span class="mr-4 text-gray-700"><span class="line-through">179.000đ</span></span>
+                        <span class="text-xl font-bold text-red-600 mr-6">149.000đ</span>
+                        <button class="btn-primary" onclick="scrollToOrderForm()">Mua Ngay</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-8 text-white text-center shadow-xl mt-12">
+                <h3 class="text-3xl font-bold mb-4">Combo Khuyến Mãi Đặc Biệt!</h3>
+                <p class="text-xl mb-6">Mua trọn bộ 3 cuốn sách với giá chỉ <span class="font-bold text-2xl">299.000đ</span> (tiết kiệm 43%)</p>
+                <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8 mb-8">
+                    <img src="https://product.hstatic.net/200000692705/product/thao_tung_tam_ly_khach_hang_bang_tam_ly_hoc_7fc014ee209d4b698318ad18ceb20b81.jpg" alt="Sách 1" class="w-32 h-auto rounded-md shadow-lg" onerror="this.onerror=null; this.src='https://placehold.co/128x192/cccccc/ffffff?text=Sách+1';">
+                    <i class="fas fa-plus text-2xl hidden md:block"></i>
+                    <img src="https://product.hstatic.net/200000060620/product/bia_20a87aee3196469088c60f27f76aba4a_master.jpg" alt="Sách 2" class="w-32 h-auto rounded-md shadow-lg" onerror="this.onerror=null; this.src='https://placehold.co/128x192/cccccc/ffffff?text=Sách+2';">
+                    <i class="fas fa-plus text-2xl hidden md:block"></i>
+                    <img src="https://bizbooks.vn/uploads/images/2023/thang-9/1-36-ke-chinh-phuc-khach-hang-mt.jpg" alt="Sách 3" class="w-32 h-auto rounded-md shadow-lg" onerror="this.onerror=null; this.src='https://placehold.co/128x192/cccccc/ffffff?text=Sách+3';">
+                </div>
+                <div class="text-center mb-6">
+                    <p class="text-xl font-bold">Giá gốc: <span class="line-through">528.000đ</span></p>
+                    <p class="text-3xl font-bold text-yellow-200">Giá combo: 299.000đ</p>
+                    <p class="text-lg mt-2">Tiết kiệm: 229.000đ (43%)</p>
+                </div>
+                <button class="btn-primary text-lg bg-white text-orange-500 hover:bg-gray-100" onclick="scrollToOrderForm()">
+                    <i class="fas fa-shopping-cart mr-2"></i> Đặt Mua Combo Ngay
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-4 bg-gray-100">
+        <div class="container mx-auto">
+            <h2 class="section-title text-3xl text-center mb-12">Khách Hàng Nói Gì?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="testimonial-card">
+                    <div class="flex items-center mb-4">
+                        <img src="https://36hn.wordpress.com/wp-content/uploads/2016/06/redsvn-chandung1951-01.jpg" alt="Nguyễn Văn Tuấn" class="w-12 h-12 rounded-full mr-4 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/48x48/cccccc/ffffff?text=T';">
+                        <div>
+                            <h4 class="font-semibold">Nguyễn Văn Tuấn</h4>
+                            <p class="text-sm text-gray-600">Sales Manager</p>
+                        </div>
+                    </div>
+                    <div class="rating mb-3">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-700">"Sau khi đọc và áp dụng các phương pháp trong bộ sách này, doanh số bán hàng của team tôi đã tăng 35% chỉ trong 2 tháng. Đặc biệt là các kỹ thuật tâm lý rất hiệu quả với khách hàng khó tính."</p>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="flex items-center mb-4">
+                        <img src="https://e.khoahoc.tv/photos/image/2015/10/05/phu_nu_viet_nam_8.jpg" alt="Trần Thị Hồng" class="w-12 h-12 rounded-full mr-4 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/48x48/cccccc/ffffff?text=H';">
+                        <div>
+                            <h4 class="font-semibold">Trần Thị Hồng</h4>
+                            <p class="text-sm text-gray-600">Chủ shop online</p>
+                        </div>
+                    </div>
+                    <div class="rating mb-3">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="text-gray-700">"Tôi thực sự ấn tượng với cuốn '36 kế Chinh Phục Khách Hàng Khó Tính'. Trước đây tôi hay mất khách vì không biết cách xử lý phản đối, giờ đã biết cách chuyển hóa từ chối thành cơ hội bán hàng."</p>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="flex items-center mb-4">
+                        <img src="https://thanhnien.mediacdn.vn/Uploaded/ngocthanh/2016_03_23/9x01_YGEO.jpg" alt="Lê Minh Đức" class="w-12 h-12 rounded-full mr-4 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/48x48/cccccc/ffffff?text=Đ';">
+                        <div>
+                            <h4 class="font-semibold">Lê Minh Đức</h4>
+                            <p class="text-sm text-gray-600">Nhân viên kinh doanh</p>
+                        </div>
+                    </div>
+                    <div class="rating mb-3">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-700">"Cuốn 'Thao Túng Khách Hàng Bằng Tâm Lý Học' đã mở ra cho tôi một cách tiếp cận hoàn toàn mới. Những kỹ thuật neo tâm lý và hiệu ứng khan hiếm đã giúp tôi tăng tỷ lệ chốt đơn lên đáng kể."</p>
+                </div>
+
+                <div class="testimonial-card hidden lg:block"> <div class="flex items-center mb-4">
+                        <img src="https://danviet.mediacdn.vn/thumb_w/650/296231569849192448/2021/11/24/944-1637718543975153507213.jpg" alt="Phạm Hoàng Nam" class="w-12 h-12 rounded-full mr-4 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/48x48/cccccc/ffffff?text=N';">
+                        <div>
+                            <h4 class="font-semibold">Phạm Hoàng Nam</h4>
+                            <p class="text-sm text-gray-600">Giám đốc kinh doanh</p>
+                        </div>
+                    </div>
+                    <div class="rating mb-3">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-700">"Tôi đã mua bộ sách này cho toàn bộ đội ngũ sales của công ty. Kết quả thật đáng ngạc nhiên, các nhân viên tự tin hơn và tỷ lệ chuyển đổi tăng gần 40%. Đầu tư cực kỳ xứng đáng!"</p>
+                </div>
+
+                 <div class="testimonial-card hidden lg:block"> <div class="flex items-center mb-4">
+                        <img src="https://e.khoahoc.tv/photos/image/2019/10/04/chan-dung-nguoi-viet-xua-7.jpg" alt="Võ Thị Minh Trang" class="w-12 h-12 rounded-full mr-4 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/48x48/cccccc/ffffff?text=T';">
+                        <div>
+                            <h4 class="font-semibold">Võ Thị Minh Trang</h4>
+                            <p class="text-sm text-gray-600">Chủ cửa hàng thời trang</p>
+                        </div>
+                    </div>
+                    <div class="rating mb-3">
+                       <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="text-gray-700">"Cuốn 'Để Trở Thành Người Bán Hàng Giỏi Nhất' đã thay đổi cách tôi nhìn nhận về nghề bán hàng. Từ người nhút nhát, tôi đã trở nên tự tin hơn rất nhiều và biết cách để tạo ấn tượng với khách hàng."</p>
+                </div>
+
+                 <div class="testimonial-card hidden lg:block"> <div class="flex items-center mb-4">
+                        <img src="https://i.ex-cdn.com/vntravellive.com/files/f1/uploaded/images/photo_news/800x800/news_20180408112005/nu_cuoi_viet_nam_mien_son_cuoc_qua_ong_kinh_nhiep_anh_gia_phap_18-550.jpg.jpg" alt="Đỗ Thanh Tùng" class="w-12 h-12 rounded-full mr-4 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/48x48/cccccc/ffffff?text=T';">
+                        <div>
+                            <h4 class="font-semibold">Đỗ Thanh Tùng</h4>
+                            <p class="text-sm text-gray-600">Freelancer bán hàng</p>
+                        </div>
+                    </div>
+                    <div class="rating mb-3">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-700">"Bộ 3 cuốn sách này là kho báu kiến thức cho bất kỳ ai làm nghề bán hàng. Tôi đã áp dụng các kỹ thuật tâm lý và cách xử lý tình huống, đơn hàng tăng đều đặn mỗi tháng. Rất đáng để đầu tư!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="orderForm" class="py-16 px-4 bg-white">
+        <div class="container mx-auto">
+            <h2 class="section-title text-3xl text-center mb-12">Đặt Hàng Ngay</h2>
+            <div class="bg-gray-50 p-6 md:p-8 rounded-lg shadow-md max-w-4xl mx-auto">
+                <div id="orderContent">
+                    <form id="buyForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                            <h3 class="text-xl font-semibold mb-4">Chọn Sản Phẩm</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <div class="bg-white p-4 rounded border border-gray-200 flex items-start cursor-pointer hover:border-red-500 transition duration-200">
+                                    <input type="radio" id="combo" name="product" value="Combo 3 cuốn sách - 299.000đ" class="mr-3 mt-1 flex-shrink-0" checked>
+                                    <label for="combo" class="cursor-pointer flex-grow">
+                                        <span class="font-medium block">Combo 3 cuốn sách</span>
+                                        <p class="text-red-600 font-bold">299.000đ</p>
+                                        <p class="text-sm text-gray-500"><span class="line-through">528.000đ</span> (Tiết kiệm 43%)</p>
+                                    </label>
+                                </div>
+                                <div class="bg-white p-4 rounded border border-gray-200 flex items-start cursor-pointer hover:border-red-500 transition duration-200">
+                                    <input type="radio" id="book1" name="product" value="Thao Túng Khách Hàng Bằng Tâm Lý Học - 149.000đ" class="mr-3 mt-1 flex-shrink-0">
+                                    <label for="book1" class="cursor-pointer flex-grow">
+                                        <span class="font-medium block">Thao Túng Khách Hàng...</span>
+                                        <p class="text-red-600 font-bold">149.000đ</p>
+                                        <p class="text-sm text-gray-500"><span class="line-through">179.000đ</span></p>
+                                    </label>
+                                </div>
+                                <div class="bg-white p-4 rounded border border-gray-200 flex items-start cursor-pointer hover:border-red-500 transition duration-200">
+                                    <input type="radio" id="book2" name="product" value="Để Trở Thành Người Bán Hàng Giỏi Nhất - 149.000đ" class="mr-3 mt-1 flex-shrink-0">
+                                    <label for="book2" class="cursor-pointer flex-grow">
+                                        <span class="font-medium block">Để Trở Thành Người...</span>
+                                        <p class="text-red-600 font-bold">149.000đ</p>
+                                        <p class="text-sm text-gray-500"><span class="line-through">179.000đ</span></p>
+                                    </label>
+                                </div>
+                                <div class="bg-white p-4 rounded border border-gray-200 flex items-start cursor-pointer hover:border-red-500 transition duration-200">
+                                    <input type="radio" id="book3" name="product" value="36 kế Chinh Phục Khách Hàng Khó Tính - 149.000đ" class="mr-3 mt-1 flex-shrink-0">
+                                    <label for="book3" class="cursor-pointer flex-grow">
+                                        <span class="font-medium block">36 kế Chinh Phục...</span>
+                                        <p class="text-red-600 font-bold">149.000đ</p>
+                                        <p class="text-sm text-gray-500"><span class="line-through">179.000đ</span></p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="fullName" class="block text-gray-700 font-medium mb-2">Họ và tên *</label>
+                            <input type="text" id="fullName" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 transition duration-200" placeholder="Nhập họ tên của bạn">
+                        </div>
+
+                        <div>
+                            <label for="phone" class="block text-gray-700 font-medium mb-2">Số điện thoại *</label>
+                            <input type="tel" id="phone" name="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 transition duration-200" placeholder="Nhập số điện thoại (VD: 09xxxxxxxx)">
+                        </div>
+
+                        <div>
+                            <label for="city" class="block text-gray-700 font-medium mb-2">Tỉnh/Thành phố *</label>
+                            <select id="city" name="city" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 bg-white transition duration-200">
+                                <option value="">Chọn Tỉnh/Thành phố</option>
+                                </select>
+                        </div>
+
+                        <div>
+                            <label for="district" class="block text-gray-700 font-medium mb-2">Quận/Huyện *</label>
+                            <select id="district" name="district" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 bg-white transition duration-200" disabled> <option value="">Chọn Quận/Huyện</option>
+                                </select>
+                        </div>
+
+                        <div>
+                            <label for="ward" class="block text-gray-700 font-medium mb-2">Phường/Xã *</label>
+                            <select id="ward" name="ward" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 bg-white transition duration-200" disabled> <option value="">Chọn Phường/Xã</option>
+                                </select>
+                        </div>
+
+                        <div>
+                            <label for="address" class="block text-gray-700 font-medium mb-2">Địa chỉ cụ thể *</label>
+                            <input type="text" id="address" name="specific_address" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 transition duration-200" placeholder="Số nhà, tên đường...">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label for="note" class="block text-gray-700 font-medium mb-2">Ghi chú</label>
+                            <textarea id="note" name="note" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 transition duration-200" placeholder="Nhập ghi chú nếu có (VD: Giao hàng giờ hành chính)..."></textarea>
+                        </div>
+
+                        <div class="md:col-span-2 text-center">
+                            <button type="button" onclick="reviewOrder()" class="btn-primary text-lg w-full md:w-auto md:px-12">
+                                <i class="fas fa-shopping-cart mr-2"></i> Đặt Hàng
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close absolute top-3 right-4 text-2xl cursor-pointer" onclick="closeModal()">&times;</span>
+            <h2 class="text-2xl font-bold mb-6 text-center">Xác Nhận Đơn Hàng</h2>
+            <div id="orderSummary" class="mb-6">
+                </div>
+            <div class="flex justify-center space-x-4">
+                <button class="btn-secondary" onclick="closeModal()">Chỉnh Sửa</button>
+                <button id="confirmOrderBtn" class="btn-success" onclick="submitOrder()">Xác Nhận Đặt Hàng</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="text-center">
+                 <i class="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
+                 <h2 class="text-2xl font-bold mb-4 text-green-600">Đặt Hàng Thành Công!</h2>
+                 <p class="text-lg mb-6">Cảm ơn bạn đã đặt hàng. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để xác nhận!</p>
+                 <button class="btn-success" onclick="closeSuccessModal()">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4">Bộ Sách Kỹ Năng Bán Hàng Đỉnh Cao</h3>
+                <p class="mb-4 text-gray-400">Nâng cao kỹ năng bán hàng và tăng doanh số với bộ 3 cuốn sách chuyên sâu về tâm lý học bán hàng và chiến lược chinh phục khách hàng.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-200"><i class="fab fa-facebook-f text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-200"><i class="fab fa-instagram text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-200"><i class="fab fa-youtube text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-200"><i class="fab fa-tiktok text-xl"></i></a>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">Liên Hệ</h3>
+                <p class="mb-2 text-gray-400"><i class="fas fa-phone mr-2 text-gray-500"></i> Hotline: <a href="tel:0923456789" class="hover:text-white">0923.456.789</a></p>
+                <p class="mb-2 text-gray-400"><i class="fas fa-envelope mr-2 text-gray-500"></i> Email: <a href="mailto:hotro@sachbanhang.vn" class="hover:text-white">hotro@sachbanhang.vn</a></p>
+                <p class="text-gray-400"><i class="fas fa-map-marker-alt mr-2 text-gray-500"></i> Địa chỉ: 123 Đường ABC, Quận XYZ, TP.HCM</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">Chính Sách</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition duration-200">Chính sách đổi trả</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition duration-200">Phương thức thanh toán</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition duration-200">Chính sách vận chuyển</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-white transition duration-200">Chính sách bảo mật</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500">
+            <p>&copy; 2024 Sách Bán Hàng. Tất cả quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+        // API endpoints for Vietnamese administrative divisions
+        const API_BASE_URL = 'https://provinces.open-api.vn/api/';
+
+        // DOM Elements
+        const citySelect = document.getElementById('city');
+        const districtSelect = document.getElementById('district');
+        const wardSelect = document.getElementById('ward');
+        const orderModal = document.getElementById('orderModal');
+        const successModal = document.getElementById('successModal');
+        const buyForm = document.getElementById('buyForm');
+        const orderSummaryDiv = document.getElementById('orderSummary');
+        const confirmOrderBtn = document.getElementById('confirmOrderBtn');
+        const notificationElement = document.getElementById('notification');
+        const notificationAvatar = document.getElementById('notificationAvatar');
+        const notificationText = document.getElementById('notificationText');
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchProvinces(); // Load provinces on page load
+            setupEventListeners(); // Set up event listeners for selects and modals
+            displayRandomNotifications(); // Start showing random purchase notifications
+        });
+
+        // --- Event Listeners Setup ---
+        function setupEventListeners() {
+            // Handle province selection change
+            citySelect.addEventListener('change', function() {
+                const provinceCode = this.value;
+                resetSelect(districtSelect, 'Chọn Quận/Huyện');
+                resetSelect(wardSelect, 'Chọn Phường/Xã');
+                districtSelect.disabled = true;
+                wardSelect.disabled = true;
+                if (provinceCode) {
+                    fetchDistricts(provinceCode);
+                }
+            });
+
+            // Handle district selection change
+            districtSelect.addEventListener('change', function() {
+                const districtCode = this.value;
+                resetSelect(wardSelect, 'Chọn Phường/Xã');
+                wardSelect.disabled = true;
+                if (districtCode) {
+                    fetchWards(districtCode);
+                }
+            });
+
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === orderModal) {
+                    closeModal();
+                }
+                if (event.target === successModal) {
+                    closeSuccessModal();
+                }
+            });
+        }
+
+        // --- Fetching Address Data ---
+        async function fetchData(url) {
+            try {
+                const response = await axios.get(url);
+                return response.data;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                // Consider adding user feedback here, e.g., an alert
+                return null; // Return null to indicate failure
+            }
+        }
+
+        async function fetchProvinces() {
+            const provinces = await fetchData(API_BASE_URL + 'p/');
+            if (provinces) {
+                populateSelect(citySelect, provinces, 'Chọn Tỉnh/Thành phố');
+            }
+        }
+
+        async function fetchDistricts(provinceCode) {
+            const provinceData = await fetchData(`${API_BASE_URL}p/${provinceCode}?depth=2`);
+            if (provinceData && provinceData.districts) {
+                populateSelect(districtSelect, provinceData.districts, 'Chọn Quận/Huyện');
+                districtSelect.disabled = false; // Enable district select
+            }
+        }
+
+        async function fetchWards(districtCode) {
+            const districtData = await fetchData(`${API_BASE_URL}d/${districtCode}?depth=2`);
+            if (districtData && districtData.wards) {
+                populateSelect(wardSelect, districtData.wards, 'Chọn Phường/Xã');
+                wardSelect.disabled = false; // Enable ward select
+            }
+        }
+
+        // --- Utility Functions ---
+        function populateSelect(selectElement, data, defaultOptionText) {
+            selectElement.innerHTML = `<option value="">${defaultOptionText}</option>`; // Clear existing options and add default
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.code;
+                option.textContent = item.name;
+                selectElement.appendChild(option);
+            });
+        }
+
+        function resetSelect(selectElement, defaultOptionText) {
+            selectElement.innerHTML = `<option value="">${defaultOptionText}</option>`;
+        }
+
+        function getSelectedText(selectElement) {
+            if (selectElement.selectedIndex <= 0) return ''; // No valid selection
+            return selectElement.options[selectElement.selectedIndex].text;
+        }
+
+        // --- Order Process Functions ---
+        function scrollToOrderForm() {
+            const orderFormSection = document.getElementById('orderForm');
+            if (orderFormSection) {
+                orderFormSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function reviewOrder() {
+            // Validate form before showing modal
+            if (!buyForm.checkValidity()) {
+                // Trigger browser's built-in validation UI
+                buyForm.reportValidity();
+                // Optionally, find the first invalid field and focus it
+                const firstInvalid = buyForm.querySelector(':invalid');
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                }
+                return; // Stop if form is invalid
+            }
+
+            // Phone validation (additional check beyond 'required')
+            const phoneInput = buyForm.elements['phone'];
+            const phonePattern = /^0\d{9}$/; // Vietnamese phone number pattern (10 digits, starts with 0)
+            if (!phonePattern.test(phoneInput.value.trim())) {
+                alert('Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại 10 số, bắt đầu bằng số 0.');
+                phoneInput.focus();
+                return;
+            }
+
+            // Get form data
+            const name = buyForm.elements['name'].value.trim();
+            const phone = phoneInput.value.trim();
+            const specificAddress = buyForm.elements['specific_address'].value.trim();
+            const note = buyForm.elements['note'].value.trim();
+            const selectedProductElement = buyForm.querySelector('input[name="product"]:checked');
+            const selectedProduct = selectedProductElement ? selectedProductElement.value : 'Chưa chọn sản phẩm';
+
+            // Get address component names
+            const cityName = getSelectedText(citySelect);
+            const districtName = getSelectedText(districtSelect);
+            const wardName = getSelectedText(wardSelect);
+            const fullAddress = `${specificAddress}, ${wardName}, ${districtName}, ${cityName}`;
+
+            // Prepare order summary HTML
+            const orderSummaryHTML = `
+                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-3 text-sm md:text-base">
+                    <div>
+                        <h3 class="font-bold text-base md:text-lg mb-2 text-gray-800">Thông tin khách hàng:</h3>
+                        <p><span class="font-semibold text-gray-600">Họ tên:</span> ${name}</p>
+                        <p><span class="font-semibold text-gray-600">Số điện thoại:</span> ${phone}</p>
+                        <p><span class="font-semibold text-gray-600">Địa chỉ:</span> ${fullAddress}</p>
+                        ${note ? `<p><span class="font-semibold text-gray-600">Ghi chú:</span> ${note}</p>` : ''}
+                    </div>
+                    <hr class="my-3">
+                    <div>
+                        <h3 class="font-bold text-base md:text-lg mb-2 text-gray-800">Thông tin đơn hàng:</h3>
+                        <p><span class="font-semibold text-gray-600">Sản phẩm:</span> ${selectedProduct}</p>
+                        <p class="mt-2 text-gray-500 text-xs">Vui lòng kiểm tra kỹ thông tin trước khi xác nhận.</p>
+                    </div>
+                </div>
+            `;
+
+            // Display summary and show modal
+            orderSummaryDiv.innerHTML = orderSummaryHTML;
+            orderModal.style.display = 'block';
+        }
+
+        function closeModal() {
+            orderModal.style.display = 'none';
+            // Ensure confirm button is reset if modal is closed manually during loading (unlikely but safe)
+            resetConfirmButton();
+        }
+
+        function closeSuccessModal() {
+            successModal.style.display = 'none';
+            buyForm.reset(); // Reset form fields
+            // Reset address dropdowns
+            resetSelect(districtSelect, 'Chọn Quận/Huyện');
+            resetSelect(wardSelect, 'Chọn Phường/Xã');
+            districtSelect.disabled = true;
+            wardSelect.disabled = true;
+            // Ensure the default product (combo) is checked
+            document.getElementById('combo').checked = true;
+        }
+
+        function setConfirmButtonLoading() {
+            confirmOrderBtn.disabled = true;
+            confirmOrderBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Đang xử lý...`;
+        }
+
+        function resetConfirmButton() {
+            confirmOrderBtn.disabled = false;
+            confirmOrderBtn.innerHTML = `Xác Nhận Đặt Hàng`;
+        }
+
+        async function submitOrder() {
+            // Show loading state on the button
+            setConfirmButtonLoading();
+
+            // Get form data again (could potentially store from reviewOrder, but re-fetching is safer)
+            const name = buyForm.elements['name'].value.trim();
+            const phone = buyForm.elements['phone'].value.trim();
+            const specificAddress = buyForm.elements['specific_address'].value.trim();
+            const note = buyForm.elements['note'].value.trim();
+            const selectedProductElement = buyForm.querySelector('input[name="product"]:checked');
+            const selectedProduct = selectedProductElement ? selectedProductElement.value : 'N/A';
+
+            const cityName = getSelectedText(citySelect);
+            const districtName = getSelectedText(districtSelect);
+            const wardName = getSelectedText(wardSelect);
+            const fullAddress = `${specificAddress}, ${wardName}, ${districtName}, ${cityName}`;
+
+            // Prepare data for SheetDB API
+            const today = new Date();
+            // Format date as DD/MM/YYYY
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+            const year = today.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
+
+            const orderData = {
+                date: formattedDate, // Ngày đặt
+                name: name,        // Họ tên
+                phone: phone,      // Số điện thoại
+                address: fullAddress,// Địa chỉ đầy đủ
+                don_hang: selectedProduct, // Sản phẩm đã chọn
+                Note: note || "Không có ghi chú" // Ghi chú (nếu có)
+            };
+
+            try {
+                // --- Simulate API delay (REMOVE IN PRODUCTION) ---
+                 // await new Promise(resolve => setTimeout(resolve, 2000));
+                // --- End Simulation ---
+
+                // Submit to SheetDB API
+                // Replace 'YOUR_SHEETDB_API_URL' with your actual SheetDB API endpoint
+                const sheetDbUrl = 'https://sheetdb.io/api/v1/fg5880qtxha50'; // Replace with your actual URL
+                await axios.post(sheetDbUrl, { data: orderData }); // SheetDB expects data wrapped in a 'data' object/array
+
+                // Success: Close order modal and show success modal
+                orderModal.style.display = 'none';
+                successModal.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error submitting order:', error);
+                // Provide user feedback on error
+                alert('Có lỗi xảy ra khi gửi đơn hàng. Vui lòng thử lại sau hoặc liên hệ bộ phận hỗ trợ.');
+                // Close the review modal on error
+                closeModal();
+            } finally {
+                 // Always reset the button state, regardless of success or failure,
+                 // but only *after* the modal transitions are likely complete or irrelevant.
+                 // Since modals are hidden/shown, resetting here might not be visually necessary,
+                 // but it's good practice for robustness.
+                 // Resetting in closeModal() and closeSuccessModal() might be sufficient.
+                 // Let's keep the reset in closeModal() for manual closure/errors.
+                 // No explicit reset needed here on success as the modal disappears.
+            }
+        }
+
+        // --- Notification System ---
+        const notificationsData = [
+             { name: "Nguyễn Văn An", location: "Hà Nội", product: "Combo 3 cuốn", avatar: "https://placehold.co/40x40/3498db/ffffff?text=A" },
+             { name: "Trần Thị Bích", location: "TP.HCM", product: "Thao Túng Tâm Lý", avatar: "https://placehold.co/40x40/e74c3c/ffffff?text=B" },
+             { name: "Lê Minh Cường", location: "Đà Nẵng", product: "Combo 3 cuốn", avatar: "https://placehold.co/40x40/2ecc71/ffffff?text=C" },
+             { name: "Phạm Thu Dung", location: "Cần Thơ", product: "Bán Hàng Giỏi Nhất", avatar: "https://placehold.co/40x40/f39c12/ffffff?text=D" },
+             { name: "Hoàng Văn Em", location: "Hải Phòng", product: "36 Kế Chinh Phục", avatar: "https://placehold.co/40x40/9b59b6/ffffff?text=E" },
+             { name: "Vũ Thị Giang", location: "Huế", product: "Combo 3 cuốn", avatar: "https://placehold.co/40x40/1abc9c/ffffff?text=G" },
+             { name: "Đỗ Minh Hải", location: "Nha Trang", product: "Combo 3 cuốn", avatar: "https://placehold.co/40x40/34495e/ffffff?text=H" },
+             { name: "Lý Thị Kim", location: "Bắc Ninh", product: "Thao Túng Tâm Lý", avatar: "https://placehold.co/40x40/d35400/ffffff?text=K" },
+             { name: "Ngô Văn Long", location: "Vũng Tàu", product: "36 Kế Chinh Phục", avatar: "https://placehold.co/40x40/c0392b/ffffff?text=L" },
+             { name: "Bùi Thị Mai", location: "Hà Giang", product: "Combo 3 cuốn", avatar: "https://placehold.co/40x40/8e44ad/ffffff?text=M" }
+        ];
+
+        let notificationTimeoutId = null; // To manage timeouts
+
+        function displayRandomNotification() {
+            // Clear any existing timeout to prevent overlapping animations if called rapidly
+            if (notificationTimeoutId) {
+                clearTimeout(notificationTimeoutId);
+                notificationElement.style.animation = 'none'; // Reset animation if interrupted
+            }
+
+            // Select random notification data
+            const randomIndex = Math.floor(Math.random() * notificationsData.length);
+            const notification = notificationsData[randomIndex];
+
+            // Update notification content
+            notificationAvatar.src = notification.avatar;
+            notificationText.textContent = `${notification.name} từ ${notification.location} đã mua "${notification.product}"`;
+
+            // Force reflow to restart animation
+            notificationElement.style.display = 'flex';
+            void notificationElement.offsetWidth; // Trigger reflow
+            notificationElement.style.animation = 'slideIn 0.5s ease-out, fadeOut 0.5s ease-out 4.5s forwards';
+
+            // Set timeout to hide the element after animation completes (5s total)
+            notificationTimeoutId = setTimeout(() => {
+                notificationElement.style.display = 'none';
+                notificationTimeoutId = null; // Clear the ID
+            }, 5000);
+        }
+
+        function displayRandomNotifications() {
+            // Initial display after a short delay
+            setTimeout(displayRandomNotification, 4000); // Show first one after 4 seconds
+
+            // Set interval for subsequent displays (randomly between 8-15 seconds)
+            setInterval(() => {
+                // No need for an inner timeout, just call the display function directly
+                displayRandomNotification();
+            }, Math.floor(Math.random() * 7000) + 8000); // 8000ms (8s) to 15000ms (15s)
+        }
+
+    </script>
+</body>
+</html>
